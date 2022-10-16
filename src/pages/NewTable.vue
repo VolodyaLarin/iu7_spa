@@ -14,8 +14,9 @@
       <template v-slot:top>
         <div class="col-12 flex">
           <q-btn @click="showFilters = true" push color="primary" label="Показать фильтры"></q-btn>
-          <q-dialog full-height :breakpoint="600" v-model="showFilters">
-            <div class="q-pa-lg bg-white">
+          <q-dialog position="bottom" v-model="showFilters">
+            <q-card>
+            <div class="q-pa-lg">
               <p class="text-h5 text-center">Фильтры</p>
               <div class="row q-col-gutter-lg justify-around">
                 <div class="col-auto" style="width: 350px">
@@ -73,6 +74,7 @@
                 </div>
               </div>
             </div>
+            </q-card>
           </q-dialog>
           <q-space />
 

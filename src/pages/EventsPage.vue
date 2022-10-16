@@ -50,7 +50,7 @@
       >
       </event-card-component>
       <div v-if="!events.length" class="text-center">
-        <q-img width="507px" style="max-width: 100vw" src="../assets/no_event_image.png"></q-img>
+        <q-img width="507px" style="max-width: 100vw" src="../assets/no_event_image.svg"></q-img>
         <div class="text-h4">Мероприятий не запланировано</div>
         <div class="text-body1 q-pt-sm q-pb-sm">
           В этот день Вы можете подготовиться к будущим мероприятиям

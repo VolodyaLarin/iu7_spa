@@ -1,12 +1,12 @@
 <template>
   <q-page style="max-width: 1100px; margin: auto" class="q-pa-sm">
     <div class="row items-center">
-      <q-img class="col-md-5 col-0" src="../assets/landing_image.png"></q-img>
+      <q-img class="col-md-5 col-0" src="../assets/landing_image.svg"></q-img>
       <div class="col-md-7 col-12">
         <div class="text-h4 q-pb-sm q-pt-md">ИУ7.РФ - пространство твоей группы</div>
         <q-btn color="positive" label="Войти через МГТУ" @click="openAuth"></q-btn>
         <div class="text-body2 q-pt-sm">
-          Нажимая кнопку войти, вы соглашаетесь с политикой конфедициальности и правилами
+          Нажимая кнопку войти, вы соглашаетесь с политикой конфиденциальности и правилами
           использования сервиса ИУ7.РФ
         </div>
         <div class="text-h5 q-pt-xl q-pb-sm">Что такое ИУ7.РФ?</div>
