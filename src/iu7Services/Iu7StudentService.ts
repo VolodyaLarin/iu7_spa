@@ -10,10 +10,11 @@ export class Iu7StudentService extends
     super('students', axios, (x) => x, (x) => x);
   }
 
-  update(id: string, row: Record<string, string>): Promise<IUser> {
-    return super.update(id, {
+  async update(id: string, row: Record<string, string>): Promise<IUser> {
+    const res = await this.axios.patch<IUser>(`${this.resourceName}/${id}`, {
       userId: id,
       ...row,
     });
+    return res.data;
   }
 }

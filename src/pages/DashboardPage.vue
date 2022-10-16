@@ -24,6 +24,7 @@
           :place="event.place"
           :type="event.type"
           :date="event.date"
+          :is-visited="!!event.visits.find((x) => x.userId === user?.id)"
         ></event-card-component>
         <q-btn
           color="primary"
@@ -34,12 +35,18 @@
         ></q-btn>
       </div>
       <div class="col-12 col-md-6 q-pa-md">
-        <event-header-component size="90px" title="У Вас отличная посещаемость!" class="q-pb-md">
+        <event-header-component
+          v-if="stats"
+          size="90px"
+          :title="stats.message"
+          :state="stats.state"
+          class="q-pb-md"
+        >
           <div class="q-pb-sm">
-            Вы посетили 90% мероприятий <br />
-            Вы посетили 9 из 10 мероприятий
+            Вы посетили {{ stats.percent }}% мероприятий <br />
+            Вы посетили {{ stats.visited }} из {{ stats.total }} мероприятий
           </div>
-          <div style="font-family: 'Roboto'; font-weight: 300; font-size: 10px; line-height: 11px">
+          <div style="font-weight: 300; font-size: 10px; line-height: 11px">
             * Данные представлены за последний месяц
           </div>
         </event-header-component>
@@ -48,6 +55,7 @@
           title="Карточка студента не заполнена"
           subtitle="Помогите старосте заполнить Ваши данные"
           class="q-pb-md"
+          v-if="false"
         >
           <q-btn color="positive" class="q-mt-sm" label="Заполнить"></q-btn>
         </event-header-component>
@@ -85,7 +93,11 @@
     </div>
 
     <q-dialog full-width v-model="isOpen" position="bottom" v-if="dialogEvent">
-      <event-dialog-component :event-id="dialogEvent" />
+      <event-dialog-component
+        @close="isOpen = false"
+        @updated="loadEvents"
+        :event-id="dialogEvent"
+      />
     </q-dialog>
   </q-page>
 </template>
@@ -125,4 +137,40 @@ const loadEvents = async () => {
   events.value = await es.filter(getDayFilter(new Date()));
 };
 loadEvents();
+
+const stats = computed(() => {
+  if (!user.value?.score?.total) return null;
+
+  const messages = [
+    'У Вас отличная посещаемость!',
+    'У Вас хорошая посещаемость!',
+    'Одногруппники давно Вас не видели',
+    'Одногруппники забыли как Вы выглядите',
+  ];
+  const states = ['visited', 'notStarted', 'missed', 'missed'];
+  const { score } = user.value;
+  const { visited } = score;
+  const { total } = score;
+  const percent = Math.round((visited / total) * 100);
+
+  let i = 3;
+
+  if (percent > 85) {
+    i = 0;
+  } else if (percent > 55) {
+    i = 1;
+  } else if (percent > 40) {
+    i = 2;
+  } else {
+    i = 3;
+  }
+
+  return {
+    total,
+    visited,
+    percent,
+    message: messages[i],
+    state: states[i],
+  };
+});
 </script>

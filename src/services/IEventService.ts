@@ -27,4 +27,5 @@ export type IEventFilter = {
 export interface IEventService extends ICrudService<IEvent, IEventFilter, Omit<IEvent, 'id' | 'visits'>> {
   addVisit(id: string): Promise<boolean>,
   syncVisits(id: string, userIds: string[]): Promise<boolean>;
+  syncEvents(date: Date): Promise<boolean>;
 }

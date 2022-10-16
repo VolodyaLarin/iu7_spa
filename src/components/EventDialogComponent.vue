@@ -29,7 +29,7 @@
           >
           </event-chips-component>
 
-          <md-editor :modelValue="event.description" previewOnly />
+          <md-editor preview-theme="github" :modelValue="event.description" previewOnly />
           <div class="q-mt-md" v-if="!canEditVisits">
             <q-btn
               @click="editEvent"
@@ -103,9 +103,8 @@
 <script lang="ts" setup>
 import { IEvent, IEventService } from 'src/services/IEventService';
 import { inject, defineProps, onMounted } from 'vue';
-import 'md-editor-v3/lib/style.css';
 
-import MdEditor from 'md-editor-v3';
+import MdEditor from 'src/components/MDEditor';
 import { useStudentStore } from 'src/stores/student-store';
 import { computed, ref } from '@vue/reactivity';
 import { Loading, Notify, scroll } from 'quasar';
@@ -118,7 +117,7 @@ const props = defineProps<{
   eventId: string;
 }>();
 
-const emit = defineEmits<{(e: 'close'): void }>();
+const emit = defineEmits<{(e: 'close'): void; (e: 'updated'): void }>();
 
 const eventService = inject<IEventService>('IEventService');
 if (!eventService) {
@@ -158,6 +157,7 @@ const saveVisits = async () => {
   try {
     await eventService.syncVisits(props.eventId, visitedIds.value);
     canEditVisits.value = false;
+    emit('updated');
   } catch {
     Notify.create({
       color: 'negative',
@@ -214,6 +214,7 @@ const saveEditEvent = async () => {
       isEditEvent.value = false;
       loadEvent();
     }, 300);
+    emit('updated');
   } catch {
     Notify.create({
       color: 'negative',
@@ -236,7 +237,8 @@ const discardEditEvent = async () => {
 const deleteEvent = async () => {
   Loading.show();
   try {
-    eventService.delete(props.eventId);
+    await eventService.delete(props.eventId);
+    emit('updated');
     emit('close');
     event.value = null;
     Notify.create({

@@ -64,7 +64,13 @@
         label="Добавить описание"
         @click="addForceDesc = true"
       ></q-btn>
-      <MdEditor class="q-pb-sm" v-else language="en-US" v-model="form.description"></MdEditor>
+      <MdEditor
+        preview-theme="github"
+        class="q-pb-sm"
+        v-else
+        language="ru-ru"
+        v-model="form.description"
+      />
 
       <div class="q-pt-md">
         <q-btn class="q-mr-sm" color="positive" type="submit" label="Сохранить изменения" />

@@ -32,12 +32,12 @@ export default defineComponent({
       if (!params.date) return '';
 
       const d = new Date(params.date);
-      const begin = date.formatDate(d, 'HH:MM');
+      const begin = date.formatDate(d, 'HH:mm');
       const end = date.formatDate(
         date.addToDate(d, {
           minutes: 95,
         }),
-        'HH:MM',
+        'HH:mm',
       );
       return `${begin} - ${end}`;
     });

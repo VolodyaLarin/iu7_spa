@@ -56,12 +56,17 @@
           В этот день Вы можете подготовиться к будущим мероприятиям
         </div>
         <div class="q-pt-md">
-          <q-btn rounded color="positive" label="Синхронизировать расписание"></q-btn>
+          <q-btn
+            rounded
+            color="positive"
+            label="Синхронизировать расписание"
+            @click="syncEvents"
+          ></q-btn>
         </div>
       </div>
     </div>
     <q-dialog full-width v-model="isOpen" position="bottom" v-if="dialogEvent">
-      <event-dialog @close="isOpen = false" :event-id="dialogEvent" />
+      <event-dialog @close="isOpen = false" @updated="loadEvents" :event-id="dialogEvent" />
     </q-dialog>
     <q-dialog full-width v-model="isAddingEvent" position="bottom" v-if="addEvent" persistent>
       <q-card>
@@ -86,7 +91,9 @@ import {
 import LogoComponent from 'src/components/LogoComponent.vue';
 import EventDialog from 'src/components/EventDialogComponent.vue';
 import { useRoute, useRouter } from 'vue-router';
-import { date, Loading, Notify } from 'quasar';
+import {
+  date, Loading, LoadingBar, Notify,
+} from 'quasar';
 import { computed } from '@vue/reactivity';
 import { IEvent, IEventService } from 'src/services/IEventService';
 import { useUserStore } from 'src/stores/user-store';
@@ -122,7 +129,16 @@ if (!es) {
 }
 
 const loadEvents = async () => {
-  events.value = await es.filter(getDayFilter(day.value));
+  LoadingBar.start();
+  try {
+    events.value = await es.filter(getDayFilter(day.value));
+  } catch {
+    Notify.create({
+      color: 'negative',
+      message: 'Произошла ошибка загрузки событий',
+    });
+  }
+  LoadingBar.stop();
 };
 
 watch(
@@ -190,6 +206,7 @@ const createNewEvent = async () => {
     const event = await es.insert(addEvent.value);
     isAddingEvent.value = false;
     openEventDialog(event);
+    loadEvents();
   } catch {
     Notify.create({
       color: 'negative',
@@ -197,5 +214,23 @@ const createNewEvent = async () => {
     });
   }
   Loading.hide();
+};
+
+const syncEvents = async () => {
+  Loading.show();
+  try {
+    await es.syncEvents(new Date(day.value));
+    Notify.create({
+      color: 'positive',
+      message: 'Успешно синхронизировано',
+    });
+  } catch {
+    Notify.create({
+      color: 'negative',
+      message: 'Произошла ошибка синхронизации',
+    });
+  }
+  Loading.hide();
+  loadEvents();
 };
 </script>

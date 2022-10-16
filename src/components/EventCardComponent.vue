@@ -9,7 +9,7 @@
       ></EventHeaderComponent>
 
       <div class="event-card-component__desc q-py-md">
-        <md-editor :modelValue="description" previewOnly />
+        <md-editor previewTheme="github" :modelValue="description" previewOnly />
       </div>
       <EventChipsComponent
         class="event-card-component__tags"
@@ -40,8 +40,7 @@
 </style>
 
 <script lang="ts">
-import MdEditor from 'md-editor-v3';
-import 'md-editor-v3/lib/style.css';
+import MdEditor from 'src/components/MDEditor';
 
 import { computed, defineComponent } from 'vue';
 import EventHeaderComponent from './EventHeaderComponent.vue';

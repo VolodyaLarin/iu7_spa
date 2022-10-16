@@ -17,12 +17,17 @@ export class Iu7EventService extends Iu7CrudService<IEvent, IEventFilter, Omit<I
   }
 
   async addVisit(id: string): Promise<boolean> {
-    await this.axios.patch(`${this.resourceName}/${id}/visits`);
+    await this.axios.post(`${this.resourceName}/${id}/visits`);
     return true;
   }
 
   async syncVisits(id: string, userIds: string[]): Promise<boolean> {
     await this.axios.put(`${this.resourceName}/${id}/visits`, userIds);
+    return true;
+  }
+
+  async syncEvents(date: Date): Promise<boolean> {
+    await this.axios.post(`/tasks/syncTimeTable/${date.toISOString().split('T')[0]}`);
     return true;
   }
 }

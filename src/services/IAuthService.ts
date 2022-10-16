@@ -16,6 +16,10 @@ export interface IUser {
   role: 'user' | 'leader';
   contingent: IContingent | null;
   student: Record<string, string> | null;
+  score?: {
+    total: number;
+    visited: number;
+  }
 }
 
 export interface IAuthService {
