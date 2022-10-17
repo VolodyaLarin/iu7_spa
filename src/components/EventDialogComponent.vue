@@ -18,6 +18,7 @@
           <event-header-component
             :title="event.subject"
             :subtitle="event.theme"
+            :state="event.visits.find((u)=>u.userId === userStore.user?.id) ? 'visited': ''"
           ></event-header-component>
 
           <event-chips-component
@@ -30,7 +31,7 @@
           </event-chips-component>
 
           <md-editor preview-theme="github" :modelValue="event.description" previewOnly />
-          <div class="q-mt-md" v-if="!canEditVisits">
+          <div class="q-mt-md" v-if="!canEditVisits && userStore.user?.role === 'leader'">
             <q-btn
               @click="editEvent"
               class="q-mr-sm"
@@ -70,7 +71,7 @@
           />
 
           <q-btn
-            v-if="!canEditVisits"
+            v-if="!canEditVisits && userStore.user?.role === 'leader'"
             @click="canEditVisits = true"
             class="q-mt-md"
             rounded
@@ -106,6 +107,7 @@ import { inject, defineProps, onMounted } from 'vue';
 
 import MdEditor from 'src/components/MDEditor';
 import { useStudentStore } from 'src/stores/student-store';
+import { useUserStore } from 'src/stores/user-store';
 import { computed, ref } from '@vue/reactivity';
 import { Loading, Notify, scroll } from 'quasar';
 import EventHeaderComponent from './EventHeaderComponent.vue';
@@ -252,4 +254,6 @@ const deleteEvent = async () => {
   }
   Loading.hide();
 };
+
+const userStore = useUserStore();
 </script>

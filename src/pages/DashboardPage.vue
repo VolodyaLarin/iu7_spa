@@ -25,6 +25,7 @@
           :type="event.type"
           :date="event.date"
           :is-visited="!!event.visits.find((x) => x.userId === user?.id)"
+          @visit="visitEvent(event.id)"
         ></event-card-component>
         <q-btn
           color="primary"
@@ -111,6 +112,7 @@ import { useUserStore } from 'src/stores/user-store';
 import { computed } from '@vue/reactivity';
 import { IEvent, IEventService } from 'src/services/IEventService';
 import EventDialogComponent from 'src/components/EventDialogComponent.vue';
+import { Loading, Notify } from 'quasar';
 import { getDayFilter } from './helpers';
 
 const isOpen = ref(false);
@@ -173,4 +175,18 @@ const stats = computed(() => {
     state: states[i],
   };
 });
+
+const visitEvent = async (id: string) => {
+  Loading.show();
+  try {
+    await es.addVisit(id);
+    loadEvents();
+  } catch {
+    Notify.create({
+      color: 'negative',
+      message: 'Не удалось посетить',
+    });
+  }
+  Loading.hide();
+};
 </script>

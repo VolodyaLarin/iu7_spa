@@ -19,7 +19,14 @@
         :type="type"
       />
     </div>
-    <div class="event-card-component__action"></div>
+    <q-btn
+      color="positive"
+      label="Посетить мероприятие"
+      class="event-card-component__action full-width q-py-md"
+      v-if="canVisit"
+      @click="$emit('visit')"
+    >
+    </q-btn>
   </div>
 </template>
 
@@ -36,6 +43,10 @@
     display: flex;
     flex-wrap: wrap;
   }
+
+  &__action {
+    border-radius: 0px 0px 20px 20px;
+  }
 }
 </style>
 
@@ -43,6 +54,7 @@
 import MdEditor from 'src/components/MDEditor';
 
 import { computed, defineComponent } from 'vue';
+import { date } from 'quasar';
 import EventHeaderComponent from './EventHeaderComponent.vue';
 import EventChipsComponent from './EventChipsComponent.vue';
 
@@ -85,7 +97,12 @@ export default defineComponent({
       return 'notStarted';
     });
 
-    return { eventState };
+    const canVisit = computed(
+      () => Math.abs(date.getDateDiff(new Date(), params.date, 'minutes')) < 10
+        && eventState.value === 'missed',
+    );
+
+    return { eventState, canVisit };
   },
 });
 </script>

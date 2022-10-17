@@ -30,4 +30,9 @@ export class Iu7EventService extends Iu7CrudService<IEvent, IEventFilter, Omit<I
     await this.axios.post(`/tasks/syncTimeTable/${date.toISOString().split('T')[0]}`);
     return true;
   }
+
+  async filter(filter: IEventFilter): Promise<IEvent[]> {
+    const data = await super.filter(filter);
+    return data.sort((a, b) => (a.date > b.date ? 1 : -1));
+  }
 }
